@@ -1,4 +1,6 @@
 --!optimize 2
+--!strict
+
 local bufferWriter = require(script.Parent.Parent.process.bufferWriter)
 local types = require(script.Parent.Parent.types)
 
@@ -7,10 +9,9 @@ local writeu16 = bufferWriter.writeu16
 --[[
 	Create a new array with the given dataTypeInterface
 ]]
-return function<T>(valueType: types.dataTypeInterface<T>): types.dataTypeInterface<{ [number]: T }>
+return function<T>(valueType: types.DataTypeInterface<T>): types.DataTypeInterface<{[number]: T}>
 	local valueWrite = valueType.write
 	local valueRead = valueType.read
-	
 
 	return {
 		read = function(b: buffer, cursor: number)
@@ -27,15 +28,14 @@ return function<T>(valueType: types.dataTypeInterface<T>): types.dataTypeInterfa
 			end
 
 			return array, arrayCursor - cursor
-		end,
+		end;
 		write = function(value: any)
-			local length = #value
-			writeu16(length)
+			writeu16(#value)
 
 			-- numeric iteration is about 2x faster than generic iteration
-			for i = 1, length do
-				valueWrite(value[i])
+			for _, item in value do
+				valueWrite(item)
 			end
-		end,
+		end;
 	}
 end

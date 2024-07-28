@@ -1,5 +1,6 @@
 --!native
 --!optimize 2
+--!strict
 
 --[[
 	Collects all write operations into a queue.
@@ -20,21 +21,20 @@ local types = require(script.Parent.Parent.types)
 local size: number
 local cursor: number
 local buff: buffer
-local references: { [number]: unknown }
+local references: {[number]: unknown}
 
 -- There are not fastcalls for copy and create, so this is slightly faster.
-local bufferCopy = buffer.copy
-local bufferCreate = buffer.create
+local buffer_create = buffer.create
 
 local function alloc(bytes: number)
-	if not (cursor + bytes >= size) then
+	if cursor + bytes < size then
 		return
 	end
 
 	size *= 2
 
-	local newBuffer = bufferCreate(size)
-	bufferCopy(newBuffer, 0, buff)
+	local newBuffer = buffer_create(size)
+	buffer.copy(newBuffer, 0, buff)
 
 	buff = newBuffer
 end
@@ -44,7 +44,7 @@ local function dyn_alloc(bytes: number)
 		size *= 2
 	end
 
-	local newBuffer = buffer.create(size)
+	local newBuffer = buffer_create(size)
 	buffer.copy(newBuffer, 0, buff)
 
 	buff = newBuffer
@@ -102,7 +102,7 @@ end
 
 function bufferWriter.writestring(value: string)
 	buffer.writestring(buff, cursor, value)
-	cursor += string.len(value)
+	cursor += #value
 end
 
 function bufferWriter.writei32(value: number)
@@ -144,7 +144,7 @@ function bufferWriter.writebool(val: boolean)
 	cursor += 1
 end
 
-function bufferWriter.writePacket(channel: types.channelData, id, writer, data)
+function bufferWriter.writePacket(channel: types.ChannelData, id, writer, data)
 	size = channel.size
 	cursor = channel.cursor
 	references = channel.references

@@ -1,10 +1,13 @@
+--!optimize 2
+--!strict
+
 local HttpService = game:GetService("HttpService")
 local RunService = game:GetService("RunService")
 
 local runContext: "server" | "client" = if RunService:IsServer() then "server" else "client"
 
 local replicatedValuePrototype = {}
-local replicatedValueMetatable = { __index = replicatedValuePrototype }
+local replicatedValueMetatable = {__index = replicatedValuePrototype}
 export type replicatedValueType = typeof(setmetatable(
 	{} :: {
 		_luauData: {},
@@ -26,7 +29,7 @@ function replicatedValuePrototype.read(self: replicatedValueType)
 	return self._luauData
 end
 
-return function(valueObject: StringValue): replicatedValueType
+local function replicatedValue(valueObject: StringValue): replicatedValueType
 	local self = setmetatable({}, replicatedValueMetatable)
 
 	self._luauData = {}
@@ -48,3 +51,5 @@ return function(valueObject: StringValue): replicatedValueType
 
 	return self
 end
+
+return replicatedValue

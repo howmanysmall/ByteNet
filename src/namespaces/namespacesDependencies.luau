@@ -1,14 +1,17 @@
+--!optimize 2
+--!strict
+
 --[[
 	Basic dependency graph for structs created within a namespace
 ]]
 
-local current: { [number]: any }?
+local current: {[number]: any}?
 local currentName: string
 
 local namespacesDependencies = {}
 
 function namespacesDependencies.start(name: string)
-	current = {} :: { [number]: any }
+	current = {} :: {[number]: any}
 	currentName = name
 end
 
@@ -28,7 +31,7 @@ function namespacesDependencies.currentName()
 	return currentName
 end
 
-function namespacesDependencies.empty(): { [number]: any }
+function namespacesDependencies.empty(): {[number]: any}
 	if current == nil then
 		return {}
 	end

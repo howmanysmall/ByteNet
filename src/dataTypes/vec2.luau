@@ -1,3 +1,6 @@
+--!optimize 2
+--!strict
+
 local bufferWriter = require(script.Parent.Parent.process.bufferWriter)
 local types = require(script.Parent.Parent.types)
 
@@ -11,15 +14,15 @@ local vec2 = {
 
 	read = function(b: buffer, cursor: number)
 		return Vector2.new(buffer.readf32(b, cursor), buffer.readf32(b, cursor + 4)), 8
-	end,
+	end;
 
 	write = function(value: Vector2)
 		alloc(8)
 		writef32NoAlloc(value.X)
 		writef32NoAlloc(value.Y)
-	end,
+	end;
 }
 
-return function(): types.dataTypeInterface<Vector2>
+return function(): types.DataTypeInterface<Vector2>
 	return vec2
 end

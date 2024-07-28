@@ -1,8 +1,11 @@
+--!optimize 2
+--!strict
+
 local RunService = game:GetService("RunService")
 
 local namespacesDependencies = require(script.Parent.Parent.namespaces.namespacesDependencies)
-local values = require(script.Parent.Parent.replicated.values)
 local types = require(script.Parent.Parent.types)
+local values = require(script.Parent.Parent.replicated.values)
 
 local runContext: "server" | "client" = if RunService:IsServer() then "server" else "client"
 
@@ -11,15 +14,15 @@ type structData = {
 }
 
 return function(input: {
-	[string]: types.dataTypeInterface<any>,
-}): types.dataTypeInterface<{}>
+	[string]: types.DataTypeInterface<any>,
+}): types.DataTypeInterface<{}>
 	-- This is used in the reading/writing parts, and isn't used in the initialization code
 	-- It's used to store the index-value pairs and the index-key pairs
 	-- Index being the position of the value in the array, and the key being the key in the struct dictionary
 	local indexValueTypePairs: {
-		[number]: types.dataTypeInterface<any>,
+		[number]: types.DataTypeInterface<any>,
 	} = {}
-	local indexKeyPairs: { [number]: string } = {}
+	local indexKeyPairs: {[number]: string} = {}
 
 	--[[
 		Array should look like {
@@ -59,7 +62,7 @@ return function(input: {
 		local name = namespacesDependencies.currentName()
 
 		local namespaceReplicator = values.access(name)
-		local namespaceData = namespaceReplicator:read() :: types.namespaceData
+		local namespaceData = namespaceReplicator:read() :: types.NamespaceData
 
 		-- struct id is just based on the order of creation in the namespace function
 		local structData = namespaceData.structs[namespacesDependencies.currentLength()]
@@ -85,12 +88,12 @@ return function(input: {
 			end
 
 			return constructed, structCursor - cursor
-		end,
+		end;
 
 		write = function(structValue)
 			for index, valueType in indexValueTypePairs do
 				valueType.write(structValue[indexKeyPairs[index]])
 			end
-		end,
+		end;
 	}
 end

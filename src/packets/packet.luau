@@ -1,11 +1,13 @@
 --!native
 --!optimize 2
+--!strict
+
 local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
 
-local types = require(script.Parent.Parent.types)
 local client = require(script.Parent.Parent.process.client)
 local server = require(script.Parent.Parent.process.server)
+local types = require(script.Parent.Parent.types)
 
 local moduleRunContext: "server" | "client" = if RunService:IsServer() then "server" else "client"
 
@@ -13,7 +15,7 @@ local moduleRunContext: "server" | "client" = if RunService:IsServer() then "ser
 	We use closures here instead of metatables for performance
 	It's just faster to use closures than metatables
 ]]
-return function(props: types.packetProps<types.dataTypeInterface<any>>, id: number)
+return function(props: types.PacketProperties<types.DataTypeInterface<any>>, id: number)
 	-- Basic properties: reliability type, "unique" which is used to get the packet ID, and set up listeners
 	local reliabilityType = props.reliabilityType or "reliable"
 	local listeners = {}
@@ -42,31 +44,32 @@ return function(props: types.packetProps<types.dataTypeInterface<any>>, id: numb
 	setmetatable(exported, {
 		__index = function(index)
 			if
-				(index == "sendTo" or index == "sendToAllExcept" or index == "sendToAll")
+				(index == "SendTo" or index == "SendToAllExcept" or index == "SendToAll")
 				and moduleRunContext == "client"
 			then
-				error("You cannot use sendTo, sendToAllExcept, or sendToAll on the client")
-			elseif index == "send" and moduleRunContext == "server" then
-				error("You cannot use send on the server")
+				error("You cannot use SendTo, SendToAllExcept, or SendToAll on the client")
+			elseif index == "Send" and moduleRunContext == "server" then
+				error("You cannot use Snd on the server")
 			end
-		end,
+		end;
 	})
 
 	-- exposed for the reader file
+	exported.Reader = props.value.read
 	exported.reader = props.value.read
 
 	if moduleRunContext == "server" then
-		function exported.sendToList(data, players: { Player })
+		function exported.SendToList(data, players: {Player})
 			for _, player in players do
 				serverSendFunction(player, id, writer, data)
 			end
 		end
 
-		function exported.sendTo(data, player: Player)
+		function exported.SendTo(data, player: Player)
 			serverSendFunction(player, id, writer, data)
 		end
 
-		function exported.sendToAllExcept(data, except: Player)
+		function exported.SendToAllExcept(data, except: Player)
 			for _, player: Player in Players:GetPlayers() do
 				if player ~= except then
 					serverSendFunction(player, id, writer, data)
@@ -74,16 +77,16 @@ return function(props: types.packetProps<types.dataTypeInterface<any>>, id: numb
 			end
 		end
 
-		function exported.sendToAll(data)
+		function exported.SendToAll(data)
 			serverSendAllFunction(id, writer, data)
 		end
 	elseif moduleRunContext == "client" then
-		function exported.send(data)
+		function exported.Send(data)
 			clientSendFunction(id, writer, data)
 		end
 	end
 
-	function exported.wait()
+	function exported.Wait()
 		-- define it up here so we can use it to disconnect
 		local index: number
 
@@ -102,11 +105,18 @@ return function(props: types.packetProps<types.dataTypeInterface<any>>, id: numb
 		return coroutine.yield()
 	end
 
-	function exported.listen(callback)
+	function exported.Listen(callback)
 		table.insert(listeners, callback)
+		return function()
+			local index = table.find(listeners, callback)
+			if index then
+				table.remove(listeners, index)
+			end
+		end
 	end
+	exported.Connect = exported.Listen
 
-	function exported.getListeners()
+	function exported.GetListeners()
 		return listeners
 	end
 

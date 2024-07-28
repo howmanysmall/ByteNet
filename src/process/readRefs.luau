@@ -1,4 +1,7 @@
 --!native
+--!optimize 2
+--!strict
+
 local current
 
 local readRefs = {}

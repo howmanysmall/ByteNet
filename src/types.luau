@@ -1,18 +1,15 @@
-export type namespaceData = {
-	packets: {
-		[string]: any,
-	},
-	structs: {
-		[number]: {
-			[string]: any,
-		},
-	},
+--!optimize 2
+--!strict
+
+export type NamespaceData = {
+	packets: {[string]: any},
+	structs: {[number]: {[string]: any}},
 }
 
 -- Externally used for defining packets
-export type packetProps<T> = {
+export type PacketProperties<T> = {
 	value: T,
-	reliabilityType: ("reliable" | "unreliable")?,
+	reliabilityType: nil | "reliable" | "unreliable",
 	callbackBehavior: {
 		spawnThread: boolean,
 		allowMultiple: boolean,
@@ -20,15 +17,15 @@ export type packetProps<T> = {
 }
 
 -- Used internally for
-export type channelData = {
+export type ChannelData = {
 	cursor: number,
 	size: number,
-	references: { unknown },
+	references: {unknown},
 	buff: buffer,
 }
 
 -- Used internally for serializing and deserializing all data types
-export type dataTypeInterface<T> = {
+export type DataTypeInterface<T> = {
 	write: (value: T) -> (),
 	read: (b: buffer, cursor: number) -> (T, number),
 	length: number?,
@@ -36,42 +33,50 @@ export type dataTypeInterface<T> = {
 
 -- Somewhat public facing: used as return result in definePacket
 type Packet<T> = {
-	sendToAll: (data: T) -> (),
-	sendTo: (data: T, target: Player) -> (),
-	sendToList: (data: T, targets: { Player }) -> (),
-	sendToAllExcept: (data: T, exceptions: Player) -> (),
+	SendToAll: (data: T) -> (),
+	SendTo: (data: T, target: Player) -> (),
+	SendToList: (data: T, targets: {Player}) -> (),
+	SendToAllExcept: (data: T, exceptions: Player) -> (),
 
-	wait: () -> T,
-	send: (data: T, target: Player?) -> (),
-	listen: (callback: (data: T, player: Player?) -> ()) -> (),
+	Wait: () -> T,
+	Send: (data: T, target: Player?) -> (),
+	Listen: (callback: (data: T, player: Player?) -> ()) -> () -> (),
+	Connect: (callback: (data: T, player: Player?) -> ()) -> () -> (),
 }
 
 -- Library type
 export type ByteNet = {
-	definePacket: <T>(props: packetProps<T>) -> Packet<T>,
-	defineNamespace: <T>(name: string, namespace: () -> T) -> T,
+	DefinePacket: <T>(props: PacketProperties<T>) -> Packet<T>,
+	DefineNamespace: <T>(name: string, namespace: () -> T) -> T,
 
-	struct: <T>(format: T) -> T,
-	bool: boolean,
-	array: <T>(value: T) -> { [number]: T },
-	optional: <T>(value: T) -> T?,
-	inst: Instance,
-	nothing: nil,
-	unknown: unknown,
-	uint8: number,
-	uint16: number,
-	uint32: number,
-	int8: number,
-	int16: number,
-	int32: number,
-	float32: number,
-	float64: number,
-	string: string,
-	vec3: Vector3,
-	vec2: Vector2,
-	buff: buffer,
-	cframe: CFrame,
-	map: <K, V>(key: K, value: V) -> { [K]: V },
+	Struct: <T>(format: T) -> T,
+	Bool: boolean,
+	Array: <T>(value: T) -> {[number]: T},
+	Optional: <T>(value: T) -> T?,
+	Inst: Instance,
+	Nothing: nil,
+	Unknown: unknown,
+	Uint8: number,
+	Uint16: number,
+	Uint32: number,
+	Int8: number,
+	Int16: number,
+	Int32: number,
+	Float32: number,
+	Float64: number,
+	String: string,
+	Vec3: Vector3,
+	Vec2: Vector2,
+	Buff: buffer,
+	CFrame: CFrame,
+	Map: <K, V>(key: K, value: V) -> {[K]: V},
+
+	Boolean: boolean,
+	Instance: Instance,
+	Buffer: buffer,
+	Nil: nil,
+	Vector3: Vector3,
+	Vector2: Vector2,
 }
 
-return nil
+return false

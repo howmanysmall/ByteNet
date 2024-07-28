@@ -1,11 +1,16 @@
+--!optimize 2
+--!strict
+
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local RunService = game:GetService("RunService")
 
-local types = require(script.Parent.Parent.types)
-local read = require(script.Parent.read)
 local bufferWriter = require(script.Parent.bufferWriter)
+local read = require(script.Parent.read)
+local types = require(script.Parent.Parent.types)
 
 local writePacket = bufferWriter.writePacket
+
+local buffer_create = buffer.create
 
 local function onClientEvent(receivedBuffer, ref)
 	read(receivedBuffer, ref)
@@ -14,16 +19,16 @@ end
 -- Shared with: src/process/server.luau (Infeasible to split this into another file)
 local function create()
 	return {
-		cursor = 0,
-		size = 256,
-		references = {},
-		buff = buffer.create(256),
+		cursor = 0;
+		size = 256;
+		references = {};
+		buff = buffer_create(256);
 	}
 end
 
-local function dump(channel: types.channelData): (buffer, { unknown }?)
+local function dump(channel: types.ChannelData): (buffer, {unknown}?)
 	local cursor = channel.cursor
-	local dumpBuffer = buffer.create(cursor)
+	local dumpBuffer = buffer_create(cursor)
 
 	buffer.copy(dumpBuffer, 0, channel.buff, 0, cursor)
 
@@ -31,16 +36,16 @@ local function dump(channel: types.channelData): (buffer, { unknown }?)
 end
 -- No longer shared
 
-local reliable: types.channelData = create()
-local unreliable: types.channelData = create()
+local reliable: types.ChannelData = create()
+local unreliable: types.ChannelData = create()
 
 local clientProcess = {}
 
-function clientProcess.sendReliable(id: number, writer: (value: any) -> (), data: { [string]: any })
+function clientProcess.sendReliable(id: number, writer: (value: any) -> (), data: {[string]: any})
 	reliable = writePacket(reliable, id, writer, data)
 end
 
-function clientProcess.sendUnreliable(id: number, writer: (value: any) -> (), data: { [string]: any })
+function clientProcess.sendUnreliable(id: number, writer: (value: any) -> (), data: {[string]: any})
 	unreliable = writePacket(unreliable, id, writer, data)
 end
 
@@ -51,7 +56,7 @@ function clientProcess.start()
 	local unreliableRemote = ReplicatedStorage:WaitForChild("ByteNetUnreliable")
 	unreliableRemote.OnClientEvent:Connect(onClientEvent)
 
-	RunService.Heartbeat:Connect(function()
+	RunService.PostSimulation:Connect(function()
 		-- Again, checking if there's anything in the channel before we send it.
 		if reliable.cursor > 0 then
 			local b, r = dump(reliable)

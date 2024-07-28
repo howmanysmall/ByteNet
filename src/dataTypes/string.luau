@@ -1,3 +1,6 @@
+--!optimize 2
+--!strict
+
 local bufferWriter = require(script.Parent.Parent.process.bufferWriter)
 local types = require(script.Parent.Parent.types)
 
@@ -13,16 +16,16 @@ local str = {
 		local length = buffer.readu16(b, cursor)
 
 		return buffer.readstring(b, cursor + 2, length), length + 2
-	end,
+	end;
 	write = function(data: string)
-		local length = string.len(data)
+		local length = #data
 		writeu16(length)
 
 		dyn_alloc(length)
 		writestring(data)
-	end,
+	end;
 }
 
-return function(): types.dataTypeInterface<string>
+return function(): types.DataTypeInterface<string>
 	return str
 end

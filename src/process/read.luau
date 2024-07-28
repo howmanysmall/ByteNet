@@ -1,5 +1,7 @@
---!optimize 2
 --!native
+--!optimize 2
+--!strict
+
 local packetIDs = require(script.Parent.Parent.namespaces.packetIDs)
 local readRefs = require(script.Parent.readRefs)
 
@@ -7,10 +9,10 @@ local ref = packetIDs.ref()
 local freeThread: thread?
 
 local function functionPasser(fn, ...)
-	local aquiredThread = freeThread
+	local acquiredThread = freeThread
 	freeThread = nil
 	fn(...)
-	freeThread = aquiredThread
+	freeThread = acquiredThread
 end
 
 local function yielder()
@@ -28,7 +30,7 @@ local function runListener(fn, ...)
 	task.spawn(freeThread :: thread, fn, ...)
 end
 
-return function(incomingBuffer: buffer, references: { [number]: unknown }?, player: Player?)
+local function read(incomingBuffer: buffer, references: {[number]: unknown}?, player: Player?)
 	local length = buffer.len(incomingBuffer)
 	local readCursor = 0
 
@@ -42,8 +44,10 @@ return function(incomingBuffer: buffer, references: { [number]: unknown }?, play
 
 		readCursor += valueLength
 
-		for _, listener in packet.getListeners() do
+		for _, listener in packet.GetListeners() do
 			runListener(listener, value, player)
 		end
 	end
 end
+
+return read

@@ -1,3 +1,6 @@
+--!optimize 2
+--!strict
+
 local bufferWriter = require(script.Parent.Parent.process.bufferWriter)
 local readRefs = require(script.Parent.Parent.process.readRefs)
 local types = require(script.Parent.Parent.types)
@@ -5,12 +8,12 @@ local types = require(script.Parent.Parent.types)
 local writeReference = bufferWriter.writeReference
 local alloc = bufferWriter.alloc
 
-return function(): types.dataTypeInterface<unknown>
+return function(): types.DataTypeInterface<unknown>
 	return {
 		write = function(value: unknown)
 			alloc(1)
 			writeReference(value)
-		end,
+		end;
 
 		read = function(b: buffer, cursor: number)
 			local refs = readRefs.get()
@@ -20,6 +23,6 @@ return function(): types.dataTypeInterface<unknown>
 			end
 
 			return refs[buffer.readu8(b, cursor)], 1
-		end,
+		end;
 	}
 end

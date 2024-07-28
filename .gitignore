@@ -11,3 +11,6 @@ build
 node_modules
 sourcemap.json
 site
+
+**/sourcemap.json
+*.code-workspace

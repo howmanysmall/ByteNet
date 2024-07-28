@@ -7,10 +7,10 @@
 
 local RunService = game:GetService("RunService")
 
-local values = require(script.Parent.Parent.replicated.values)
-local types = require(script.Parent.Parent.types)
 local namespacesDependencies = require(script.Parent.namespacesDependencies)
 local packetIDs = require(script.Parent.packetIDs)
+local types = require(script.Parent.Parent.types)
+local values = require(script.Parent.Parent.replicated.values)
 
 local runContext: "server" | "client" = if RunService:IsServer() then "server" else "client"
 
@@ -34,8 +34,8 @@ return function(
 
 	if runContext == "server" then
 		local constructedNamespace = {
-			structs = {},
-			packets = {},
+			structs = {};
+			packets = {};
 		}
 
 		for key in packets do
@@ -54,7 +54,7 @@ return function(
 	elseif runContext == "client" then
 		-- yes, this means that packets technically don't need to be defined on the client
 		-- we do it anyway for typechecking and perf shortcuts
-		local namespaceData = namespaceReplicator:read() :: types.namespaceData
+		local namespaceData = namespaceReplicator:read() :: types.NamespaceData
 
 		for key, packet in packets do
 			result[key] = packet(namespaceData.packets[key])

@@ -1,3 +1,6 @@
+--!optimize 2
+--!strict
+
 local bufferWriter = require(script.Parent.Parent.process.bufferWriter)
 local types = require(script.Parent.Parent.types)
 
@@ -10,13 +13,13 @@ local boolean = {
 	]]
 	read = function(b: buffer, cursor: number)
 		return buffer.readu8(b, cursor) == 1, 1
-	end,
+	end;
 
-	length = 1,
+	length = 1;
 
-	write = bufferWriter.writebool,
+	write = bufferWriter.writebool;
 }
 
-return function(): types.dataTypeInterface<boolean>
+return function(): types.DataTypeInterface<boolean>
 	return boolean
 end
