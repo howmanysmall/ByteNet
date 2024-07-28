@@ -5,7 +5,7 @@
 	Basic dependency graph for structs created within a namespace
 ]]
 
-local current: {[number]: any}?
+local current: {[number]: any}? = nil
 local currentName: string
 
 local namespacesDependencies = {}

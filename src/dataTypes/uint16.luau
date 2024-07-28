@@ -7,9 +7,9 @@ local types = require(script.Parent.Parent.types)
 local writeu16 = bufferWriter.writeu16
 
 local uint16 = {
-	write = writeu16;
+	Write = writeu16;
 
-	read = function(b: buffer, cursor: number)
+	Read = function(b: buffer, cursor: number)
 		return buffer.readu16(b, cursor), 2
 	end;
 }

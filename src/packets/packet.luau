@@ -15,28 +15,28 @@ local moduleRunContext: "server" | "client" = if RunService:IsServer() then "ser
 	We use closures here instead of metatables for performance
 	It's just faster to use closures than metatables
 ]]
-return function(props: types.PacketProperties<types.DataTypeInterface<any>>, id: number)
+local function packet(properties: types.PacketProperties<types.DataTypeInterface<any>>, id: number)
 	-- Basic properties: reliability type, "unique" which is used to get the packet ID, and set up listeners
-	local reliabilityType = props.reliabilityType or "reliable"
+	local reliabilityType: "Reliable" | "Unreliable" = properties.ReliabilityType or "Reliable"
 	local listeners = {}
 
 	local serverSendFunction: (player: Player, id: number, writer: (value: any) -> (), data: any) -> () = if reliabilityType
-			== "reliable"
+			== "Reliable"
 		then server.sendPlayerReliable
 		else server.sendPlayerUnreliable
 
 	local serverSendAllFunction: (id: number, writer: (value: any) -> (), data: any) -> () = if reliabilityType
-			== "reliable"
+			== "Reliable"
 		then server.sendAllReliable
 		else server.sendAllUnreliable
 
 	local clientSendFunction: (id: number, writer: (value: any) -> (), data: any) -> () = if reliabilityType
-			== "reliable"
+			== "Reliable"
 		then client.sendReliable
 		else client.sendUnreliable
 
 	-- shorcut to avoid indexxing
-	local writer = props.value.write
+	local writer = properties.Value.Write
 
 	local exported = {}
 
@@ -55,8 +55,8 @@ return function(props: types.PacketProperties<types.DataTypeInterface<any>>, id:
 	})
 
 	-- exposed for the reader file
-	exported.Reader = props.value.read
-	exported.reader = props.value.read
+	exported.Reader = properties.Value.Read
+	exported.reader = properties.Value.Read
 
 	if moduleRunContext == "server" then
 		function exported.SendToList(data, players: {Player})
@@ -122,3 +122,5 @@ return function(props: types.PacketProperties<types.DataTypeInterface<any>>, id:
 
 	return exported
 end
+
+return packet

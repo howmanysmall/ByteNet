@@ -11,11 +11,11 @@ local vec3 = {
 	--[[
 		3 floats, 12 bytes
 	]]
-	read = function(b: buffer, cursor: number)
+	Read = function(b: buffer, cursor: number)
 		return Vector3.new(buffer.readf32(b, cursor), buffer.readf32(b, cursor + 4), buffer.readf32(b, cursor + 8)), 12
 	end;
 
-	write = function(value: Vector3)
+	Write = function(value: Vector3)
 		alloc(12)
 		writef32NoAlloc(value.X)
 		writef32NoAlloc(value.Y)

@@ -17,7 +17,7 @@ export type replicatedValueType = typeof(setmetatable(
 ))
 
 function replicatedValuePrototype.write(self: replicatedValueType, value: {})
-	assert(runContext == "server", "cannot write to replicatdvalue on client")
+	assert(runContext == "server", "cannot write to replicatedvalue on client")
 
 	self._luauData = value
 

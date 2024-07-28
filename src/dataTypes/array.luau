@@ -10,26 +10,26 @@ local writeu16 = bufferWriter.writeu16
 	Create a new array with the given dataTypeInterface
 ]]
 return function<T>(valueType: types.DataTypeInterface<T>): types.DataTypeInterface<{[number]: T}>
-	local valueWrite = valueType.write
-	local valueRead = valueType.read
+	local valueWrite = valueType.Write
+	local valueRead = valueType.Read
 
 	return {
-		read = function(b: buffer, cursor: number)
+		Read = function(b: buffer, cursor: number)
 			local arrayLength = buffer.readu16(b, cursor)
 			local arrayCursor = cursor + 2
 
 			local array = table.create(arrayLength)
 
-			for i = 1, arrayLength do
+			for index = 1, arrayLength do
 				local item, length = valueRead(b, arrayCursor)
-				array[i] = item
+				array[index] = item
 
 				arrayCursor += length
 			end
 
 			return array, arrayCursor - cursor
 		end;
-		write = function(value: any)
+		Write = function(value: any)
 			writeu16(#value)
 
 			-- numeric iteration is about 2x faster than generic iteration

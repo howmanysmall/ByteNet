@@ -9,7 +9,7 @@ local values = require(script.Parent.Parent.replicated.values)
 
 local runContext: "server" | "client" = if RunService:IsServer() then "server" else "client"
 
-type structData = {
+type StructData = {
 	[string]: number,
 }
 
@@ -75,12 +75,12 @@ return function(input: {
 	end
 
 	return {
-		read = function(b, cursor)
+		Read = function(b, cursor)
 			local constructed = table.clone(input)
 			local structCursor = cursor
 
 			for index, valueType in indexValueTypePairs do
-				local value, length = valueType.read(b, structCursor)
+				local value, length = valueType.Read(b, structCursor)
 
 				constructed[indexKeyPairs[index]] = value
 
@@ -90,9 +90,9 @@ return function(input: {
 			return constructed, structCursor - cursor
 		end;
 
-		write = function(structValue)
+		Write = function(structValue)
 			for index, valueType in indexValueTypePairs do
-				valueType.write(structValue[indexKeyPairs[index]])
+				valueType.Write(structValue[indexKeyPairs[index]])
 			end
 		end;
 	}

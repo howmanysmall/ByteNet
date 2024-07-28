@@ -7,8 +7,8 @@ local types = require(script.Parent.Parent.types)
 local writebool = bufferWriter.writebool
 
 return function<T>(valueType: types.DataTypeInterface<T>): types.DataTypeInterface<T?>
-	local valueRead = valueType.read
-	local valueWrite = valueType.write
+	local valueRead = valueType.Read
+	local valueWrite = valueType.Write
 
 	return {
 		--[[
@@ -16,7 +16,7 @@ return function<T>(valueType: types.DataTypeInterface<T>): types.DataTypeInterfa
 			if it's false, its length of 1 cuz only 1 boolean
 		]]
 
-		read = function(b: buffer, cursor: number)
+		Read = function(b: buffer, cursor: number)
 			if buffer.readu8(b, cursor) == 0 then
 				-- doesn't exist
 				return nil, 1
@@ -27,7 +27,7 @@ return function<T>(valueType: types.DataTypeInterface<T>): types.DataTypeInterfa
 			return item, length + 1
 		end;
 
-		write = function(value: any)
+		Write = function(value: any)
 			local exists = value ~= nil
 			writebool(exists)
 			if exists then

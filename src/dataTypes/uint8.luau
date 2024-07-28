@@ -7,9 +7,8 @@ local types = require(script.Parent.Parent.types)
 local writeu8 = bufferWriter.writeu8
 
 local uint8 = {
-	write = writeu8;
-
-	read = function(b: buffer, cursor: number)
+	Write = writeu8;
+	Read = function(b: buffer, cursor: number)
 		return buffer.readu8(b, cursor), 1
 	end;
 }

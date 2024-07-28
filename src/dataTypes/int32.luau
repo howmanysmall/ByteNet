@@ -7,9 +7,9 @@ local types = require(script.Parent.Parent.types)
 local writei32 = bufferWriter.writei32
 
 local int32 = {
-	write = writei32;
+	Write = writei32;
 
-	read = function(b: buffer, cursor: number)
+	Read = function(b: buffer, cursor: number)
 		return buffer.readi32(b, cursor), 4
 	end;
 }

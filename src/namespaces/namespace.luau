@@ -1,3 +1,6 @@
+--!optimize 2
+--!strict
+
 --[[
 	The file that contains the function for handling and creating namespaces.
 	Namespaces aren't really anything special, they are just an encapsulation to make it easier to manage packets and structs.
@@ -16,7 +19,7 @@ local runContext: "server" | "client" = if RunService:IsServer() then "server" e
 
 local count = 0
 
-return function(
+local function namespace(
 	name: string,
 	input: () -> {
 		[string]: any,
@@ -65,3 +68,5 @@ return function(
 
 	return result
 end
+
+return namespace

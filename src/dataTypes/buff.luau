@@ -10,7 +10,7 @@ local dyn_alloc = bufferWriter.dyn_alloc
 local buffer_create = buffer.create
 
 local buff = {
-	read = function(b: buffer, cursor: number)
+	Read = function(b: buffer, cursor: number)
 		local length = buffer.readu16(b, cursor)
 		local freshBuffer = buffer_create(length)
 
@@ -19,7 +19,7 @@ local buff = {
 
 		return freshBuffer, length + 2
 	end;
-	write = function(data: buffer)
+	Write = function(data: buffer)
 		local length = buffer.len(data)
 		writeu16(length)
 

@@ -10,12 +10,12 @@ local alloc = bufferWriter.alloc
 
 return function(): types.DataTypeInterface<unknown>
 	return {
-		write = function(value: unknown)
+		Write = function(value: unknown)
 			alloc(1)
 			writeReference(value)
 		end;
 
-		read = function(b: buffer, cursor: number)
+		Read = function(b: buffer, cursor: number)
 			local refs = readRefs.get()
 
 			if not refs then

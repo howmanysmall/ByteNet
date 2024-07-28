@@ -8,7 +8,7 @@ local writef32NoAlloc = bufferWriter.writef32NoAlloc
 local alloc = bufferWriter.alloc
 
 local cframe = {
-	read = function(b: buffer, cursor: number)
+	Read = function(b: buffer, cursor: number)
 		local x = buffer.readf32(b, cursor)
 		local y = buffer.readf32(b, cursor + 4)
 		local z = buffer.readf32(b, cursor + 8)
@@ -18,7 +18,7 @@ local cframe = {
 
 		return CFrame.new(x, y, z) * CFrame.Angles(rx, ry, rz), 24
 	end;
-	write = function(value: CFrame)
+	Write = function(value: CFrame)
 		local x, y, z = value.X, value.Y, value.Z
 		local rx, ry, rz = value:ToEulerAnglesXYZ()
 

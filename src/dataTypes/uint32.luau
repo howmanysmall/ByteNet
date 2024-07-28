@@ -7,9 +7,9 @@ local types = require(script.Parent.Parent.types)
 local writeu32 = bufferWriter.writeu32
 
 local uint32 = {
-	write = writeu32;
+	Write = writeu32;
 
-	read = function(b: buffer, cursor: number)
+	Read = function(b: buffer, cursor: number)
 		return buffer.readu32(b, cursor), 4
 	end;
 }

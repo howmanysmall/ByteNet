@@ -4,8 +4,8 @@
 local types = require(script.Parent.Parent.types)
 
 local nothing = {
-	write = function() end;
-	read = function()
+	Write = function() end;
+	Read = function()
 		return nil, 0
 	end;
 }

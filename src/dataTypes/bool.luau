@@ -11,13 +11,13 @@ local boolean = {
 		
 		Write and read based off a uint8
 	]]
-	read = function(b: buffer, cursor: number)
+	Read = function(b: buffer, cursor: number)
 		return buffer.readu8(b, cursor) == 1, 1
 	end;
 
-	length = 1;
+	Length = 1;
 
-	write = bufferWriter.writebool;
+	Write = bufferWriter.writebool;
 }
 
 return function(): types.DataTypeInterface<boolean>

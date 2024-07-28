@@ -40,7 +40,7 @@ local function read(incomingBuffer: buffer, references: {[number]: unknown}?, pl
 		local packet = ref[buffer.readu8(incomingBuffer, readCursor)]
 		readCursor += 1
 
-		local value, valueLength = packet.reader(incomingBuffer, readCursor)
+		local value, valueLength = packet.Reader(incomingBuffer, readCursor)
 
 		readCursor += valueLength
 

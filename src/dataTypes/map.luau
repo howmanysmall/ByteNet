@@ -12,11 +12,11 @@ return function(
 	valueType: types.DataTypeInterface<any>
 ): types.DataTypeInterface<{[any]: any}>
 	-- Cache these functions to avoid the overhead of the index
-	local keyWrite = keyType.write
-	local valueWrite = valueType.write
+	local keyWrite = keyType.Write
+	local valueWrite = valueType.Write
 
 	return {
-		read = function(b: buffer, cursor: number)
+		Read = function(b: buffer, cursor: number)
 			local map = {}
 			local mapCursor = cursor
 
@@ -26,10 +26,10 @@ return function(
 
 			for _ = 1, mapLength do
 				-- read key/value pairs and add them to the map
-				local key, keyLength = keyType.read(b, mapCursor)
+				local key, keyLength = keyType.Read(b, mapCursor)
 				mapCursor += keyLength
 
-				local value, valueLength = valueType.read(b, mapCursor)
+				local value, valueLength = valueType.Read(b, mapCursor)
 				mapCursor += valueLength
 
 				map[key] = value
@@ -38,7 +38,7 @@ return function(
 			-- Return the map, alongside length, because mapCursor - cursor = size
 			return map, mapCursor - cursor
 		end;
-		write = function(map: any)
+		Write = function(map: any)
 			local count = 0
 			for _ in map do
 				count += 1

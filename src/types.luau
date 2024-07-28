@@ -8,12 +8,12 @@ export type NamespaceData = {
 
 -- Externally used for defining packets
 export type PacketProperties<T> = {
-	value: T,
-	reliabilityType: nil | "reliable" | "unreliable",
-	callbackBehavior: {
-		spawnThread: boolean,
-		allowMultiple: boolean,
+	CallbackBehavior: {
+		AllowMultiple: boolean,
+		SpawnThread: boolean,
 	}?,
+	ReliabilityType: nil | "Reliable" | "Unreliable",
+	Value: T,
 }
 
 -- Used internally for
@@ -26,9 +26,9 @@ export type ChannelData = {
 
 -- Used internally for serializing and deserializing all data types
 export type DataTypeInterface<T> = {
-	write: (value: T) -> (),
-	read: (b: buffer, cursor: number) -> (T, number),
-	length: number?,
+	Length: number?,
+	Read: (b: buffer, cursor: number) -> (T, number),
+	Write: (value: T) -> (),
 }
 
 -- Somewhat public facing: used as return result in definePacket
@@ -46,7 +46,7 @@ type Packet<T> = {
 
 -- Library type
 export type ByteNet = {
-	DefinePacket: <T>(props: PacketProperties<T>) -> Packet<T>,
+	DefinePacket: <T>(properties: PacketProperties<T>) -> Packet<T>,
 	DefineNamespace: <T>(name: string, namespace: () -> T) -> T,
 
 	Struct: <T>(format: T) -> T,
