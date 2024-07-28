@@ -49,7 +49,7 @@ local function packet(properties: types.PacketProperties<types.DataTypeInterface
 			then
 				error("You cannot use SendTo, SendToAllExcept, or SendToAll on the client")
 			elseif index == "Send" and moduleRunContext == "server" then
-				error("You cannot use Snd on the server")
+				error("You cannot use Send on the server")
 			end
 		end;
 	})

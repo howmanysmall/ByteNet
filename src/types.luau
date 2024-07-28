@@ -11,9 +11,11 @@ export type PacketProperties<T> = {
 	CallbackBehavior: {
 		AllowMultiple: boolean,
 		SpawnThread: boolean,
+		[any]: never,
 	}?,
 	ReliabilityType: nil | "Reliable" | "Unreliable",
 	Value: T,
+	[any]: never,
 }
 
 -- Used internally for
